@@ -1,0 +1,19 @@
+b main
+b triangle.asm:21
+b geometry.cpp:12
+r
+p/x $xmm0.v2_int64[0]
+x/1xg $rbp
+p/d ($rbp-$rsp)/8+1
+x/12xg $rsp
+c
+p/s (char*)(&text1)
+p/x &text1
+x/1xg *(long*)$rbp
+c
+1.2 3.4 5.6
+p/f $xmm15.v2_int64[0]
+p/f $xmm13.v2_int64[0]
+c
+p/x $xmm0.v2_int64[0]
+p/f $xmm0.v2_int64[0]

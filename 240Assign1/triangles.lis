@@ -1,0 +1,395 @@
+     1                                  extern printf
+     2                                  extern scanf
+     3                                  extern sin
+     4                                  extern cos
+     5                                  global triangles
+     6                                  
+     7                                  section .data
+     8 00000000 57652074616B652063-         text1 db "We take care of all your triangles.", 10, 0
+     8 00000009 617265206F6620616C-
+     8 00000012 6C20796F7572207472-
+     8 0000001B 69616E676C65732E0A-
+     8 00000024 00                 
+     9 00000025 506C6561736520656E-         text2 db "Please enter your name: ", 0
+     9 0000002E 74657220796F757220-
+     9 00000037 6E616D653A2000     
+    10 0000003E 476F6F64206D6F726E-         text3 db "Good morning ", 0
+    10 00000047 696E672000         
+    11 0000004C 2C20706C6561736520-         text4 db ", please enter the length of side 1, length of side2, and size (degrees) of", 10, 0
+    11 00000055 656E74657220746865-
+    11 0000005E 206C656E677468206F-
+    11 00000067 66207369646520312C-
+    11 00000070 206C656E677468206F-
+    11 00000079 662073696465322C20-
+    11 00000082 616E642073697A6520-
+    11 0000008B 286465677265657329-
+    11 00000094 206F660A00         
+    12 00000099 2074686520696E636C-         text5 db " the included angle between them as real float numbers. Separate the numbers by white", 10, 0
+    12 000000A2 7564656420616E676C-
+    12 000000AB 65206265747765656E-
+    12 000000B4 207468656D20617320-
+    12 000000BD 7265616C20666C6F61-
+    12 000000C6 74206E756D62657273-
+    12 000000CF 2E2053657061726174-
+    12 000000D8 6520746865206E756D-
+    12 000000E1 626572732062792077-
+    12 000000EA 686974650A00       
+    13 000000F0 2073706163652C2061-         text6 db " space, and be sure to press <enter> after the last inputted number.", 10, 0
+    13 000000F9 6E6420626520737572-
+    13 00000102 6520746F2070726573-
+    13 0000010B 73203C656E7465723E-
+    13 00000114 206166746572207468-
+    13 0000011D 65206C61737420696E-
+    13 00000126 707574746564206E75-
+    13 0000012F 6D6265722E0A00     
+    14 00000136 5468616E6B20796F75-         text7 db "Thank you ", 0
+    14 0000013F 2000               
+    15 00000141 2E20596F7520656E74-         text8 db ". You entered %lf %lf %lf", 10, 0
+    15 0000014A 6572656420256C6620-
+    15 00000153 256C6620256C660A00 
+    16 0000015C 546865206172656120-         text9 db "The area of your triangle is %lf square units", 10, 0
+    16 00000165 6F6620796F75722074-
+    16 0000016E 7269616E676C652069-
+    16 00000177 7320256C6620737175-
+    16 00000180 61726520756E697473-
+    16 00000189 0A00               
+    17 0000018B 207371756172652075-         text10 db " square units", 10, 0
+    17 00000194 6E6974730A00       
+    18 0000019A 54686520706572696D-         text11 db "The perimeter is %lf linear units.", 10, 0
+    18 000001A3 657465722069732025-
+    18 000001AC 6C66206C696E656172-
+    18 000001B5 20756E6974732E0A00 
+    19                                    ;  text12 db " linear units.", 10, 0
+    20 000001BE 546865206172656120-         text13 db "The area will now be sent to the driver function.", 10, 0
+    20 000001C7 77696C6C206E6F7720-
+    20 000001D0 62652073656E742074-
+    20 000001D9 6F2074686520647269-
+    20 000001E2 7665722066756E6374-
+    20 000001EB 696F6E2E0A00       
+    21                                  
+    22 000001F1 556E666F7274756E61-         error db "Unfortunately, one of your inputs is invalid. Please run this program again.", 10, 0
+    22 000001FA 74656C792C206F6E65-
+    22 00000203 206F6620796F757220-
+    22 0000020C 696E70757473206973-
+    22 00000215 20696E76616C69642E-
+    22 0000021E 20506C656173652072-
+    22 00000227 756E20746869732070-
+    22 00000230 726F6772616D206167-
+    22 00000239 61696E2E0A00       
+    23                                  
+    24 0000023F 257300                      string_format db "%s", 0
+    25 00000242 256C662000                  float_format db "%lf ", 0
+    26 00000247 256C6620256C662025-         float_format3 db "%lf %lf %lf", 0
+    26 00000250 6C6600             
+    27                                  
+    28                                  section .bss
+    29 00000000 <res 00000040>              first_name resb 64
+    30 00000040 <res 00000040>              last_name resb 64
+    31                                  
+    32                                  
+    33                                  section .text
+    34                                  
+    35                                  triangles:
+    36                                  
+    37 00000000 55                        push rbp
+    38 00000001 4889E5                    mov rbp, rsp
+    39 00000004 57                        push rdi
+    40 00000005 56                        push rsi
+    41 00000006 52                        push rdx
+    42 00000007 51                        push rcx
+    43 00000008 4150                      push r8
+    44 0000000A 4151                      push r9
+    45 0000000C 4152                      push r10
+    46 0000000E 4153                      push r11
+    47 00000010 4154                      push r12
+    48 00000012 4155                      push r13
+    49 00000014 4156                      push r14
+    50 00000016 4157                      push r15
+    51 00000018 53                        push rbx
+    52 00000019 9C                        pushf
+    53                                  
+    54                                  
+    55                                  
+    56                                  ;;_printText1:
+    57 0000001A 6A00                        push qword 0
+    58 0000001C B800000000                  mov rax, 0
+    59 00000021 48BF-                       mov rdi, string_format
+    59 00000023 [3F02000000000000] 
+    60 0000002B 48BE-                       mov rsi, text1
+    60 0000002D [0000000000000000] 
+    61 00000035 E8(00000000)                call printf
+    62 0000003A 58                          pop rax
+    63                                  
+    64                                  ;_printText2:
+    65 0000003B 6A00                        push qword 0
+    66 0000003D B800000000                  mov rax, 0
+    67 00000042 48BF-                       mov rdi, string_format
+    67 00000044 [3F02000000000000] 
+    68 0000004C 48BE-                       mov rsi, text2
+    68 0000004E [2500000000000000] 
+    69                                    ;  mov rdi, text2
+    70 00000056 E8(00000000)                call printf
+    71 0000005B 58                          pop rax
+    72                                  
+    73                                  ;_getName:
+    74 0000005C B800000000                  mov rax, 0
+    75 00000061 48BF-                       mov rdi, string_format
+    75 00000063 [3F02000000000000] 
+    76 0000006B 48BE-                       mov rsi, first_name
+    76 0000006D [0000000000000000] 
+    77 00000075 E8(00000000)                call scanf
+    78                                  
+    79 0000007A B800000000                  mov rax, 0
+    80 0000007F 48BF-                       mov rdi, string_format
+    80 00000081 [3F02000000000000] 
+    81 00000089 48BE-                       mov rsi, last_name
+    81 0000008B [4000000000000000] 
+    82 00000093 E8(00000000)                call scanf
+    83                                  
+    84                                  ;_printText3:
+    85 00000098 6A00                        push qword 0
+    86 0000009A B800000000                  mov rax, 0
+    87 0000009F 48BF-                       mov rdi, string_format
+    87 000000A1 [3F02000000000000] 
+    88 000000A9 48BE-                       mov rsi, text3
+    88 000000AB [3E00000000000000] 
+    89 000000B3 E8(00000000)                call printf
+    90 000000B8 58                          pop rax
+    91                                  
+    92 000000B9 6A00                        push qword 0
+    93 000000BB B800000000                  mov rax, 0
+    94 000000C0 48BF-                       mov rdi, string_format
+    94 000000C2 [3F02000000000000] 
+    95 000000CA 48BE-                       mov rsi, first_name
+    95 000000CC [0000000000000000] 
+    96 000000D4 E8(00000000)                call printf
+    97 000000D9 58                          pop rax
+    98                                  
+    99 000000DA 6A00                        push qword 0
+   100 000000DC B800000000                  mov rax, 0
+   101 000000E1 48BF-                       mov rdi, string_format
+   101 000000E3 [3F02000000000000] 
+   102 000000EB 48BE-                       mov rsi, text4
+   102 000000ED [4C00000000000000] 
+   103 000000F5 E8(00000000)                call printf
+   104 000000FA 58                          pop rax
+   105                                  
+   106 000000FB 6A00                        push qword 0
+   107 000000FD B800000000                  mov rax, 0
+   108 00000102 48BF-                       mov rdi, string_format
+   108 00000104 [3F02000000000000] 
+   109 0000010C 48BE-                       mov rsi, text5
+   109 0000010E [9900000000000000] 
+   110 00000116 E8(00000000)                call printf
+   111 0000011B 58                          pop rax
+   112                                  
+   113 0000011C 6A00                        push qword 0
+   114 0000011E B800000000                  mov rax, 0
+   115 00000123 48BF-                       mov rdi, string_format
+   115 00000125 [3F02000000000000] 
+   116 0000012D 48BE-                       mov rsi, text6
+   116 0000012F [F000000000000000] 
+   117 00000137 E8(00000000)                call printf
+   118 0000013C 58                          pop rax
+   119                                  
+   120                                  
+   121                                      ;input 3 floats
+   122 0000013D 6A00                        push qword 0
+   123 0000013F 6A00                        push qword 0
+   124 00000141 6A00                        push qword 0
+   125 00000143 6A00                        push qword 0
+   126 00000145 48BF-                       mov rdi, float_format3
+   126 00000147 [4702000000000000] 
+   127 0000014F 4889E6                      mov rsi, rsp
+   128 00000152 4889E2                      mov rdx, rsp
+   129 00000155 4883C208                    add rdx, qword 8
+   130 00000159 4889E1                      mov rcx, rsp
+   131 0000015C 4883C110                    add rcx, qword 16
+   132 00000160 E8(00000000)                call scanf
+   133 00000165 F2440F103C24                movsd xmm15, [rsp]
+   134 0000016B F2440F10742408              movsd xmm14, [rsp+8]
+   135 00000172 F2440F106C2410              movsd xmm13, [rsp+16]
+   136 00000179 58                          pop rax
+   137 0000017A 58                          pop rax
+   138 0000017B 58                          pop rax
+   139 0000017C 58                          pop rax
+   140                                  
+   141                                  
+   142 0000017D 6A00                        push qword 0
+   143 0000017F B800000000                  mov rax, 0
+   144 00000184 48BF-                       mov rdi, string_format
+   144 00000186 [3F02000000000000] 
+   145 0000018E 48BE-                       mov rsi, text7
+   145 00000190 [3601000000000000] 
+   146 00000198 E8(00000000)                call printf
+   147 0000019D 58                          pop rax
+   148                                  
+   149 0000019E 6A00                        push qword 0
+   150 000001A0 B800000000                  mov rax, 0
+   151 000001A5 48BF-                       mov rdi, string_format
+   151 000001A7 [3F02000000000000] 
+   152 000001AF 48BE-                       mov rsi, first_name
+   152 000001B1 [0000000000000000] 
+   153 000001B9 E8(00000000)                call printf
+   154 000001BE 58                          pop rax
+   155                                  
+   156                                  
+   157 000001BF B803000000                  mov rax, 3
+   158 000001C4 48BF-                       mov rdi, text8
+   158 000001C6 [4101000000000000] 
+   159 000001CE F2410F10C7                  movsd xmm0, xmm15
+   160 000001D3 F2410F10CE                  movsd xmm1, xmm14
+   161 000001D8 F2410F10D5                  movsd xmm2, xmm13
+   162 000001DD E8(00000000)                call printf
+   163                                  
+   164                                  ; check for invalid inputs
+   165 000001E2 6A00                        push qword 0
+   166 000001E4 B804000000                  mov rax, 4
+   167 000001E9 41B800000000                mov r8, 0
+   168 000001EF F2490F2AE8                  cvtsi2sd xmm5, r8
+   169 000001F4 66440F2EFD                  ucomisd xmm15, xmm5
+   170 000001F9 0F8634010000                jbe input_error
+   171 000001FF 66440F2EF5                  ucomisd xmm14, xmm5
+   172 00000204 0F8629010000                jbe input_error
+   173 0000020A 66440F2EED                  ucomisd xmm13, xmm5
+   174 0000020F 0F861E010000                jbe input_error
+   175 00000215 58                          pop rax
+   176                                  
+   177                                  
+   178                                      ;Place pi into xmm12
+   179 00000216 48B8182D4454F82109-         mov rax, 0x400921F854442D18
+   179 0000021F 40                 
+   180 00000220 50                          push rax
+   181 00000221 F2440F102424                movsd xmm12, [rsp]
+   182 00000227 58                          pop rax
+   183                                  
+   184                                  
+   185                                      ;Place 180.0 into xmm11
+   186 00000228 B8B4000000                  mov rax, 180
+   187 0000022D F24C0F2AD8                  cvtsi2sd xmm11, rax
+   188                                  
+   189                                      ;Convert xmm13 (deg) to xmm10 (rad)
+   190 00000232 F2450F10D5                  movsd xmm10, xmm13
+   191 00000237 F2450F59D4                  mulsd xmm10, xmm12
+   192 0000023C F2450F5ED3                  divsd xmm10, xmm11
+   193                                  
+   194                                      ;Place sin(rad) into xmm9
+   195 00000241 B801000000                  mov rax, 1
+   196 00000246 F2410F10C2                  movsd xmm0, xmm10
+   197 0000024B E8(00000000)                call sin
+   198 00000250 F2440F10C8                  movsd xmm9, xmm0
+   199                                  
+   200                                      ;Convert 2 to 2.0 and store in xmm8
+   201 00000255 B802000000                  mov rax, 2
+   202 0000025A F24C0F2AC0                  cvtsi2sd xmm8, rax
+   203                                  
+   204                                      ;Cumpute area and store in xmm7
+   205 0000025F F2410F10FF                  movsd xmm7, xmm15
+   206 00000264 F2410F59FE                  mulsd xmm7, xmm14
+   207 00000269 F2410F59F9                  mulsd xmm7, xmm9
+   208 0000026E F2410F5EF8                  divsd xmm7, xmm8
+   209                                  
+   210                                      ;Print area
+   211 00000273 B801000000                  mov rax, 1
+   212 00000278 48BF-                       mov rdi, text9
+   212 0000027A [5C01000000000000] 
+   213 00000282 F20F10C7                    movsd xmm0, xmm7
+   214 00000286 E8(00000000)                call printf ;area is correct
+   215                                  
+   216                                      ;Find perimeter
+   217                                      ;Square sides 1 and 2
+   218 0000028B B802000000                  mov rax, 2
+   219 00000290 F2410F10F7                  movsd xmm6, xmm15 ;side1
+   220 00000295 F2410F10EE                  movsd xmm5, xmm14 ;side2
+   221 0000029A F20F59F6                    mulsd xmm6, xmm6
+   222 0000029E F20F59ED                    mulsd xmm5, xmm5
+   223 000002A2 F20F58F5                    addsd xmm6, xmm5 ; this works!
+   224                                  
+   225                                  
+   226                                      ;Place side 1 + side 2 in xmm11, don't need 180.0 anymore
+   227 000002A6 B801000000                  mov rax, 1
+   228 000002AB F2450F10DF                  movsd xmm11, xmm15
+   229 000002B0 F2450F58DE                  addsd xmm11, xmm14 ; this works!
+   230                                  
+   231                                  
+   232                                      ;Place cos(rad) in xmm12, don't need pi anymore
+   233 000002B5 B802000000                  mov rax, 2
+   234 000002BA F2410F10C2                  movsd xmm0, xmm10
+   235 000002BF E8(00000000)                call cos
+   236 000002C4 F2440F10E0                  movsd xmm12, xmm0 ; this works!
+   237                                  
+   238                                      ;could remove maybe
+   239                                      ;mov rax, 2
+   240                                      ;cvtsi2sd xmm8, rax
+   241                                  
+   242                                  
+   243                                      ;Place side 3 into xmm12  ; problem here
+   244 000002C9 B802000000                  mov rax, 2
+   245 000002CE F2450F59E7                  mulsd xmm12, xmm15
+   246 000002D3 F2450F59E6                  mulsd xmm12, xmm14
+   247 000002D8 F2450F59E0                  mulsd xmm12, xmm8
+   248 000002DD F2410F5CF4                  subsd xmm6, xmm12
+   249 000002E2 F20F51F6                    sqrtsd xmm6, xmm6
+   250                                  
+   251                                  
+   252                                      ;Add all the sides and store in xmm6
+   253 000002E6 B801000000                  mov rax, 1
+   254 000002EB F2410F58F7                  addsd xmm6, xmm15
+   255 000002F0 F2410F58F6                  addsd xmm6, xmm14
+   256                                  
+   257                                      ;Print perimeter
+   258 000002F5 B801000000                  mov rax, 1
+   259 000002FA 48BF-                       mov rdi, text11
+   259 000002FC [9A01000000000000] 
+   260 00000304 F20F10C6                    movsd xmm0, xmm6
+   261 00000308 E8(00000000)                call printf
+   262                                  
+   263 0000030D B801000000                  mov rax, 1
+   264 00000312 48BF-                       mov rdi, string_format
+   264 00000314 [3F02000000000000] 
+   265 0000031C 48BE-                       mov rsi, text13
+   265 0000031E [BE01000000000000] 
+   266 00000326 E8(00000000)                call printf
+   267                                  
+   268                                      ;movsd xmm0, xmm7
+   269 0000032B EB00                        jmp code_is_good
+   270                                  
+   271                                  
+   272                                  code_is_good:
+   273 0000032D F20F10C7                    movsd xmm0, xmm7
+   274 00000331 EB28                        jmp end_pops
+   275                                  
+   276                                  
+   277                                  input_error:
+   278 00000333 6A00                        push qword 0
+   279 00000335 B801000000                  mov rax, 1
+   280 0000033A 48BF-                       mov rdi, string_format
+   280 0000033C [3F02000000000000] 
+   281 00000344 48BE-                       mov rsi, error
+   281 00000346 [F101000000000000] 
+   282 0000034E E8(00000000)                call printf
+   283 00000353 58                          pop rax
+   284 00000354 58                          pop rax
+   285                                  
+   286 00000355 F20F10C5                    movsd xmm0, xmm5
+   287 00000359 EB00                        jmp end_pops
+   288                                  
+   289                                  
+   290                                  end_pops:
+   291 0000035B 9D                          popf
+   292 0000035C 5B                          pop rbx
+   293 0000035D 415F                        pop r15
+   294 0000035F 415E                        pop r14
+   295 00000361 415D                        pop r13
+   296 00000363 415C                        pop r12
+   297 00000365 415B                        pop r11
+   298 00000367 415A                        pop r10
+   299 00000369 4159                        pop r9
+   300 0000036B 4158                        pop r8
+   301 0000036D 59                          pop rcx
+   302 0000036E 5A                          pop rdx
+   303 0000036F 5E                          pop rsi
+   304 00000370 5F                          pop rdi
+   305 00000371 5D                          pop rbp
+   306                                  
+   307 00000372 C3                          ret

@@ -1,0 +1,17 @@
+b main
+b driver.c:14
+b electric.asm:31
+b electric.asm:110
+b electric.asm:116
+b driver.c:19
+r
+x/1xg $rsp
+c
+x/8xg $rsp
+c
+c
+p/f $xmm14.v2_int64[0]
+c
+x/1xg $rbp
+c
+p/f result
